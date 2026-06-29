@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [18, 20, 22]
+        # rolldown (tsdown's build engine) needs Node 20+ (node:util styleText).
+        # The published dist targets node18, so consumers on Node 18 are fine.
+        node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
