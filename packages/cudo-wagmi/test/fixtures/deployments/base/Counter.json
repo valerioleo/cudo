@@ -1,0 +1,14 @@
+{
+  "contractName": "Counter",
+  "deploymentName": "Counter",
+  "address": "0x00000000000000000000000000000000000000c0",
+  "chainId": 8453,
+  "networkName": "base",
+  "transactionHash": "0xaaaa000000000000000000000000000000000000000000000000000000000001",
+  "deployer": "0x000000000000000000000000000000000000dead",
+  "deployedAt": "2026-06-28T00:00:00.000Z",
+  "abi": [
+    { "type": "function", "name": "number", "inputs": [], "outputs": [{ "type": "uint256" }], "stateMutability": "view" },
+    { "type": "function", "name": "increment", "inputs": [], "outputs": [], "stateMutability": "nonpayable" }
+  ]
+}

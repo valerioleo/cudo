@@ -1,0 +1,14 @@
+{
+  "contractName": "Counter",
+  "deploymentName": "Counter",
+  "address": "0x0000000000000000000000000000000000005e90",
+  "chainId": 11155111,
+  "networkName": "sepolia",
+  "transactionHash": "0xcccc000000000000000000000000000000000000000000000000000000000003",
+  "deployer": "0x000000000000000000000000000000000000dead",
+  "deployedAt": "2026-06-28T00:00:00.000Z",
+  "abi": [
+    { "type": "function", "name": "number", "inputs": [], "outputs": [{ "type": "uint256" }], "stateMutability": "view" },
+    { "type": "function", "name": "increment", "inputs": [], "outputs": [], "stateMutability": "nonpayable" }
+  ]
+}

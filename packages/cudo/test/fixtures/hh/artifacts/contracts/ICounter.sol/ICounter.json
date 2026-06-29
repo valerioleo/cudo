@@ -1,0 +1,12 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ICounter",
+  "sourceName": "contracts/ICounter.sol",
+  "abi": [
+    { "inputs": [], "name": "count", "outputs": [{ "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

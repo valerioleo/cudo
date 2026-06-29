@@ -1,0 +1,12 @@
+{
+  "_format": "hh-sol-build-info-1",
+  "id": "test",
+  "solcVersion": "0.8.35",
+  "solcLongVersion": "0.8.35+commit.40a35a09",
+  "input": {
+    "language": "Solidity",
+    "sources": { "contracts/Counter.sol": { "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\ncontract Counter { uint256 public count; }" } },
+    "settings": { "optimizer": { "enabled": true, "runs": 200 } }
+  },
+  "output": {}
+}

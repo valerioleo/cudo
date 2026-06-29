@@ -1,0 +1,21 @@
+{
+  "abi": [
+    { "inputs": [{ "name": "start", "type": "uint256" }, { "name": "owner_", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" },
+    { "inputs": [], "name": "count", "outputs": [{ "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }
+  ],
+  "bytecode": {
+    "object": "0x6080604052348015600e575f5ffd5b50604051610190380380610190833981016040819052602b916053565b5f91909155600180546001600160a01b0319166001600160a01b03909216919091179055608b565b5f5f604083850312156063575f5ffd5b825160208401519092506001600160a01b03811681146080575f5ffd5b809150509250929050565b60f9806100975f395ff3fe",
+    "linkReferences": {}
+  },
+  "deployedBytecode": { "object": "0x60806040", "linkReferences": {} },
+  "metadata": {
+    "compiler": { "version": "0.8.35+commit.40a35a09" },
+    "language": "Solidity",
+    "settings": {
+      "compilationTarget": { "src/Counter.sol": "Counter" },
+      "optimizer": { "enabled": true, "runs": 200 }
+    },
+    "sources": { "src/Counter.sol": { "keccak256": "0xabc", "license": "MIT" } }
+  },
+  "id": 0
+}

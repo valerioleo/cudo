@@ -1,0 +1,39 @@
+{
+  "name": "cudo-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "viem-first contract deployment: deploy once, use contracts as typed objects.",
+  "license": "MIT",
+  "author": "Valerio Leo",
+  "homepage": "https://github.com/valerioleo/cudo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valerioleo/cudo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/valerioleo/cudo/issues"
+  },
+  "packageManager": "pnpm@10.18.3",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.31.0",
+    "oxlint": "^1.71.0",
+    "prettier": "^3.9.1",
+    "turbo": "^2.10.0",
+    "typescript": "^5.9.3"
+  }
+}
