@@ -1,6 +1,7 @@
 {
   "name": "@cudo/wagmi",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "description": "Source cudo deployments into @wagmi/cli — typed contract objects for your app.",
   "license": "MIT",

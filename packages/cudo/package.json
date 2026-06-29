@@ -1,6 +1,7 @@
 {
   "name": "cudo",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "description": "viem-first contract deployment: deploy once, use contracts as typed objects.",
   "license": "MIT",

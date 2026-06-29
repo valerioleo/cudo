@@ -1,6 +1,7 @@
 {
   "name": "@cudo/etherscan",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "description": "Verify contracts on Etherscan (V2, all chains) when cudo deploys them.",
   "license": "MIT",

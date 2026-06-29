@@ -1,6 +1,7 @@
 {
   "name": "@cudo/slack",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "description": "Notify a Slack channel when cudo deploys a contract.",
   "license": "MIT",

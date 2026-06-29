@@ -1,6 +1,7 @@
 {
   "name": "@cudo/sourcify",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "description": "Verify contracts on Sourcify (v2, keyless) when cudo deploys them.",
   "license": "MIT",
