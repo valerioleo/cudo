@@ -1,6 +1,6 @@
 {
   "name": "@deployoor/slack",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": false,
   "type": "module",
   "description": "Notify a Slack channel when deployoor deploys a contract.",
