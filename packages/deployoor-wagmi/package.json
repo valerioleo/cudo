@@ -1,7 +1,7 @@
 {
   "name": "@deployoor/wagmi",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "description": "Source deployoor deployments into @wagmi/cli — typed contract objects for your app.",
   "license": "MIT",

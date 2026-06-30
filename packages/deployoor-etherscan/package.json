@@ -1,7 +1,7 @@
 {
   "name": "@deployoor/etherscan",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "description": "Verify contracts on Etherscan (V2, all chains) when deployoor deploys them.",
   "license": "MIT",
