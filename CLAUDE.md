@@ -31,8 +31,12 @@ packages/
   deployoor-etherscan/  — @deployoor/etherscan: Etherscan V2 verifier (one key, all chains; also Blockscout/Routescan via apiUrl)
   deployoor-sourcify/   — @deployoor/sourcify: Sourcify v2 verifier (keyless)
   deployoor-slack/      — @deployoor/slack: Slack notifier
+  deployoor-testing/    — @deployoor/testing: createTestClients() (tevm as viem clients + an in-memory store) for node-free tests
 apps/              — (placeholder) docs/marketing site goes here (vocs is the planned choice)
+examples/          — dogfood projects (hardhat, foundry); verified via each one's `e2e` script (needs the toolchain), kept out of the core CI sweep
 ```
+
+The **store is a pluggable `StoreAdapter`** (`src/store.ts`): `fsStore` (default, JSON on disk) and `memoryStore` are exported from `deployoor`, and a deployer accepts a `store` override in its call options — `@deployoor/testing` passes an in-memory store so test deploys never touch disk.
 
 Plugins are **deploy-lifecycle hooks** authored against `deployoor/plugin`; each is its own npm package, peer-depends on `deployoor`, and imports **only** from `deployoor/plugin`.
 

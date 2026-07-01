@@ -1,9 +1,10 @@
 import { resolve } from "node:path";
 import { Cause, Effect, Exit, Layer } from "effect";
-import type { Abi, PublicClient, WalletClient } from "viem";
+import type { Abi, Address, PublicClient, WalletClient } from "viem";
 import { Clients, clientsLayer, type DeployedContract } from "../services/clients";
 import { Store, layerFromAdapter } from "../services/store";
-import { getOrDeploy, register, reset, type RegisterEntry } from "./pipeline";
+import { getOrDeploy, register, type RegisterEntry } from "./pipeline";
+import { NoChainOnClient } from "../errors";
 import type { ContractConstructorArgs } from "viem";
 import type { Libraries, TypedArtifact } from "../schemas";
 import type { AnyDeployPlugin, PluginDeps, PluginOverrides } from "../plugin";
@@ -27,7 +28,6 @@ export interface Deployer<P extends readonly AnyDeployPlugin[]> {
     opts: GetOrDeployArgs<A, P>,
   ) => Promise<DeployedContract<A>>;
   readonly register: <A extends Abi>(entry: RegisterEntry<A>) => Promise<DeployedContract<A>>;
-  readonly reset: (name?: string) => Promise<void>;
 }
 
 export interface CreateDeployerConfig<P extends readonly AnyDeployPlugin[]> {
@@ -89,7 +89,6 @@ export const createDeployer = <const P extends readonly AnyDeployPlugin[]>(
         ),
       ),
     register: (entry) => run(register(entry, deps)),
-    reset: (name) => run(reset(name)),
   };
 };
 
@@ -107,6 +106,8 @@ export interface DeployerCallOptions<A extends Abi, P extends readonly AnyDeploy
   readonly libraries?: Libraries;
   readonly plugins?: PluginOverrides<P>;
   readonly onPluginError?: OnPluginError;
+  /** Override the store (default: fsStore at the config's deploymentsPath). Pass an in-memory store for tests. */
+  readonly store?: StoreAdapter;
 }
 
 /**
@@ -128,7 +129,7 @@ export const defineDeployer = <A extends Abi, const P extends readonly AnyDeploy
     createDeployer({
       walletClient: opts.walletClient,
       publicClient: opts.publicClient,
-      store,
+      store: opts.store ?? store,
       plugins: config.plugins,
       onPluginError: config.onPluginError,
     }).getOrDeploy(artifact, {
@@ -139,4 +140,65 @@ export const defineDeployer = <A extends Abi, const P extends readonly AnyDeploy
       plugins: opts.plugins,
       onPluginError: opts.onPluginError,
     });
+};
+
+/** Options a generated `register(...)` accepts: clients + the external contract's identity. */
+export interface RegisterCallOptions<A extends Abi> {
+  readonly walletClient: WalletClient;
+  readonly publicClient: PublicClient;
+  readonly name: string;
+  readonly address: Address;
+  readonly abi: A;
+  /** Override the store (default: fsStore at the config's deploymentsPath). */
+  readonly store?: StoreAdapter;
+}
+
+/**
+ * Build a project-level `register` from the config. `deployoor generate` emits one in the
+ * deployers index; the user records a contract they did NOT deploy (e.g. USDC, a partner
+ * contract) on the client's chain — no transaction — and gets back the same viem contract
+ * object `getOrDeploy` returns. `name` is the deployment name (use distinct names to track
+ * several instances).
+ */
+export const defineRegister = <const P extends readonly AnyDeployPlugin[]>(config: Config<P>) => {
+  const store = fsStore(resolve(config.deploymentsPath ?? "./deployments"));
+  return <A extends Abi>(opts: RegisterCallOptions<A>): Promise<DeployedContract<A>> =>
+    createDeployer({
+      walletClient: opts.walletClient,
+      publicClient: opts.publicClient,
+      store: opts.store ?? store,
+      plugins: config.plugins,
+      onPluginError: config.onPluginError,
+    }).register({ name: opts.name, address: opts.address, abi: opts.abi });
+};
+
+/** Options a generated `reset(...)` accepts: a public client (for the chain) + an optional name. */
+export interface ResetCallOptions {
+  readonly publicClient: PublicClient;
+  /** Forget just this deployment; omit to forget every deployment on the client's chain. */
+  readonly name?: string;
+  /** Override the store (default: fsStore at the config's deploymentsPath). */
+  readonly store?: StoreAdapter;
+}
+
+/**
+ * Build a project-level `reset` from the config. Forgets recorded deployment(s) on the
+ * public client's chain so the next `getOrDeploy` deploys fresh. This is a pure
+ * local-records operation — it never touches on-chain state, so it needs only a public
+ * client (no signer). Scoped to that client's chain.
+ */
+export const defineReset = <const P extends readonly AnyDeployPlugin[]>(config: Config<P>) => {
+  const store = fsStore(resolve(config.deploymentsPath ?? "./deployments"));
+  return async (opts: ResetCallOptions): Promise<void> => {
+    const chain = opts.publicClient.chain;
+    if (chain === undefined) throw new NoChainOnClient();
+    const active = opts.store ?? store;
+    const network = chain.name.toLowerCase();
+    if (opts.name === undefined) {
+      const all = await active.list(network);
+      await Promise.all(all.map((r) => active.remove(network, r.deploymentName)));
+    } else {
+      await active.remove(network, opts.name);
+    }
+  };
 };

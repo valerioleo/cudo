@@ -2,7 +2,7 @@ import { Effect, Option } from "effect";
 import type { Abi, Address } from "viem";
 import { Clients, type DeployedContract } from "../services/clients";
 import { Store } from "../services/store";
-import { DeploymentFailed } from "../errors";
+import { DeploymentExists, DeploymentFailed } from "../errors";
 import type { InvalidDeploymentRecord, LibrariesUnlinked, PluginFailed } from "../errors";
 import { linkLibraries } from "./link-libraries";
 import { resolveActive, runOnContractDeployed, type OnPluginError } from "./plugins";
@@ -98,20 +98,30 @@ export interface RegisterEntry<A extends Abi = Abi> {
   readonly abi: A;
 }
 
-/** Record a contract you did not deploy (e.g. USDC) on the deployer's chain. */
+/**
+ * Record a contract you did not deploy (e.g. USDC) on the deployer's chain, marked
+ * `kind: "external"` so it's distinguishable from a real deployment. Won't clobber a
+ * deployed record at the same (chain, name): re-registering an external record updates
+ * it, but a deployed one makes register fail (reset it first, or use a different name).
+ */
 export const register = <A extends Abi>(
   entry: RegisterEntry<A>,
   deps: PluginDeps,
-): Effect.Effect<DeployedContract<A>, never, Clients | Store> =>
+): Effect.Effect<DeployedContract<A>, DeploymentExists | InvalidDeploymentRecord, Clients | Store> =>
   Effect.gen(function* () {
     const clients = yield* Clients;
     const store = yield* Store;
+    const network = clients.chain.name.toLowerCase();
+    const existing = yield* store.read(network, entry.name);
+    if (Option.isSome(existing) && existing.value.kind !== "external") {
+      return yield* Effect.fail(new DeploymentExists({ network, name: entry.name }));
+    }
     yield* store.write({
       contractName: entry.name,
       deploymentName: entry.name,
       address: entry.address,
       chainId: clients.chain.id,
-      networkName: clients.chain.name.toLowerCase(),
+      networkName: network,
       abi: entry.abi,
       bytecode: "0x",
       constructorArgs: [],
@@ -119,28 +129,7 @@ export const register = <A extends Abi>(
       deployer: clients.account,
       deployedAt: deps.now(),
       compiler: { version: "" },
-      kind: "standard",
+      kind: "external",
     });
     return clients.contractAt(entry.address, entry.abi);
-  });
-
-/**
- * Forget recorded deployment(s) so the next getOrDeploy deploys fresh.
- *
- * A deployment is identified by (chain, name). The chain is fixed by this
- * deployer's client, so reset is implicitly scoped to that chain — `reset("Token")`
- * forgets Token on the deployer's network only. To reset on another chain, use a
- * deployer built for that chain's client.
- */
-export const reset = (name?: string): Effect.Effect<void, InvalidDeploymentRecord, Clients | Store> =>
-  Effect.gen(function* () {
-    const clients = yield* Clients;
-    const store = yield* Store;
-    const network = clients.chain.name.toLowerCase();
-    if (name === undefined) {
-      const all = yield* store.list(network);
-      yield* Effect.forEach(all, (r) => store.remove(network, r.deploymentName), { discard: true });
-    } else {
-      yield* store.remove(network, name);
-    }
   });
