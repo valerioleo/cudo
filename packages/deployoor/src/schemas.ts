@@ -80,7 +80,7 @@ export const DeploymentRecord = z.object({
   deployedAt: z.number().int(),
   compiler: z.object({ version: z.string(), settings: z.unknown().optional() }),
   libraries: Libraries.optional(),
-  kind: z.enum(["standard", "proxy"]).default("standard"),
+  kind: z.enum(["standard", "proxy", "external"]).default("standard"),
   implementation: Address.optional(),
 });
 // Explicit interface (not z.infer) for the type plugins and consumers import: a
@@ -100,6 +100,6 @@ export interface DeploymentRecord {
   readonly deployedAt: number;
   readonly compiler: { readonly version: string; readonly settings?: unknown };
   readonly libraries?: Record<string, `0x${string}`>;
-  readonly kind: "standard" | "proxy";
+  readonly kind: "standard" | "proxy" | "external";
   readonly implementation?: `0x${string}`;
 }
