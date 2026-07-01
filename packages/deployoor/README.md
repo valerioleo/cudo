@@ -239,7 +239,7 @@ test("transfer moves the balance", async () => {
 
 ## Using your contracts
 
-`deployments/` is a stable, documented JSON format, so consuming it is just a [`@wagmi/cli`](https://wagmi.sh/cli) plugin — [`@deployoor/wagmi`](../deployoor-wagmi):
+The `deployments/` folder is plain, universally-portable JSON — ideal to commit as your project's single source of truth. Because JSON is universal, anything can consume it: another service, a script, or a backend in Python, Go, or Rust. And for the TypeScript/viem world, import it straight into the widely-used [`@wagmi/cli`](https://wagmi.sh/cli) via the [`@deployoor/wagmi`](../deployoor-wagmi) plugin — typed contract objects and React hooks, all ready to use everywhere you want:
 
 ```ts
 // wagmi.config.ts

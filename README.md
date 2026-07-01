@@ -46,7 +46,7 @@ flowchart TD
     B -. "optional — consume with viem, or @deployoor/wagmi + @wagmi/cli hooks" .-> C
 ```
 
-That `deployments/` folder is the product: portable vanilla JSON, committed to your repo, readable by humans and any tool. Keep it in its own package, separate from your contracts, as the single source of truth for every network — and import it anywhere, even the browser. The generated deployers already hand back fully-typed viem objects at deploy time; consuming the records elsewhere — a frontend, a backend, a script — needs nothing but `viem`. Want typed React hooks? The optional [`@deployoor/wagmi`](packages/deployoor-wagmi) plugin feeds [`@wagmi/cli`](https://wagmi.sh/cli) — one convenient consumer, not a required second half.
+That `deployments/` folder is the product: universally-portable vanilla JSON, committed to your repo, readable by humans and any tool — in any language, since it's just JSON (a Python, Go, or Rust service reads it just as easily). Keep it in its own package, separate from your contracts, as the single source of truth for every network — and import it anywhere, even the browser. The generated deployers already hand back fully-typed viem objects at deploy time; consuming the records elsewhere — a frontend, a backend, a script — needs nothing but `viem`. Want typed React hooks? The optional [`@deployoor/wagmi`](packages/deployoor-wagmi) plugin feeds [`@wagmi/cli`](https://wagmi.sh/cli) — one convenient consumer, not a required second half.
 
 ## Quickstart
 
